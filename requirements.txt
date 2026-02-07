@@ -1,0 +1,3 @@
+kaggle
+PyGithub
+requests
