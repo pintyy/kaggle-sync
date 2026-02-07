@@ -15,7 +15,7 @@ Kaggle hesabınızdaki tüm notebook'ları otomatik olarak GitHub'a senkronize e
 
 ## 📋 Gereksinimler
 
-- Python 3.6 veya üzeri
+- Python 3.8 veya üzeri
 - Kaggle hesabı ve API key
 - GitHub hesabı ve Personal Access Token
 
@@ -205,12 +205,13 @@ Pull request'ler kabul edilir! Büyük değişiklikler için lütfen önce bir i
 
 Bu proje MIT lisansı altında lisanslanmıştır.
 
-## ⚠️ Uyarılar
+## ⚠️ ÖNEMLİ UYARILAR
 
-- GitHub token'ınızı **asla** public repository'lere commit etmeyin
-- Kaggle API key'inizi **asla** paylaşmayın
-- Script tüm notebook'larınızı **public** repository'ler olarak oluşturur
-- Private notebook'lar için GitHub'da private repo oluşturmak istiyorsanız, kodu değiştirmeniz gerekir
+- ⚠️ **GİZLİLİK:** Script tüm notebook'larınızı **PUBLIC** (herkese açık) GitHub repository'leri olarak oluşturur
+  - Private Kaggle notebook'larınız da public olarak paylaşılacaktır
+  - Private repo'lar oluşturmak istiyorsanız, sync.py dosyasındaki `private=False` satırını `private=True` olarak değiştirin
+- 🔐 GitHub token'ınızı **asla** public repository'lere commit etmeyin
+- 🔐 Kaggle API key'inizi **asla** paylaşmayın
 
 ## 📞 Destek
 

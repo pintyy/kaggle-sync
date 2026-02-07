@@ -11,6 +11,8 @@ import re
 import subprocess
 import tempfile
 import shutil
+import csv
+from io import StringIO
 from pathlib import Path
 from typing import List, Dict, Optional
 import unicodedata
@@ -102,32 +104,36 @@ def get_github_token() -> str:
 
 
 def list_kaggle_notebooks(username: str) -> List[Dict]:
-    """List all notebooks for a Kaggle user."""
+    """List all notebooks for a Kaggle user with pagination support."""
     print(f"📋 Listing notebooks for user: {username}")
     
+    all_notebooks = []
+    page = 1
+    page_size = 100
+    
     try:
-        # Run kaggle kernels list command
-        cmd = ['kaggle', 'kernels', 'list', '--mine', '--page-size', '100', '--csv']
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        while True:
+            # Run kaggle kernels list command with pagination
+            cmd = ['kaggle', 'kernels', 'list', '--mine', '--page', str(page), '--page-size', str(page_size), '--csv']
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            
+            # Parse CSV output properly using csv module
+            csv_reader = csv.DictReader(StringIO(result.stdout))
+            notebooks = list(csv_reader)
+            
+            if not notebooks:
+                break
+            
+            all_notebooks.extend(notebooks)
+            
+            # If we got fewer notebooks than page_size, we've reached the end
+            if len(notebooks) < page_size:
+                break
+            
+            page += 1
         
-        # Parse CSV output
-        lines = result.stdout.strip().split('\n')
-        if len(lines) < 2:
-            print("⚠️  No notebooks found")
-            return []
-        
-        # Parse header
-        headers = lines[0].split(',')
-        
-        # Parse notebooks
-        notebooks = []
-        for line in lines[1:]:
-            values = line.split(',')
-            notebook = dict(zip(headers, values))
-            notebooks.append(notebook)
-        
-        print(f"✅ Found {len(notebooks)} notebook(s)")
-        return notebooks
+        print(f"✅ Found {len(all_notebooks)} notebook(s)")
+        return all_notebooks
         
     except subprocess.CalledProcessError as e:
         print(f"❌ Error listing notebooks: {e.stderr}")
